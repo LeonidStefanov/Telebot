@@ -1,9 +1,7 @@
 package telebot
 
 import (
-	"home/leonid/Git/Pract/telegram_bot/pkg/models"
 	"home/leonid/Git/Pract/telegram_bot/pkg/service"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -11,29 +9,24 @@ import (
 type Bot struct {
 	bot *tgbotapi.BotAPI
 	geo geo
-	db  database
+
 	svc service.Service
 }
 
 type geo interface {
 	GetGeo(ip string) string
 }
-type database interface {
-	AddRequest(userId int, userName, response string) error
-	GetRequest() ([]models.Request, error)
-}
 
-func NewBot(bot *tgbotapi.BotAPI, g geo, db database, svc service.Service) *Bot {
+func NewBot(bot *tgbotapi.BotAPI, g geo, svc service.Service) *Bot {
 	return &Bot{
 		bot: bot,
 		geo: g,
-		db:  db,
 		svc: svc,
 	}
 }
 
 func (b *Bot) ConnectBot() error {
-	log.Printf("%s  подключен ", b.bot.Self.UserName)
+	// log.Printf("%s  подключен ", b.bot.Self.UserName)
 
 	updates := b.initUpdatesChannel()
 

@@ -18,7 +18,7 @@ const (
 )
 
 func (b *Bot) handleMassage(message *tgbotapi.Message) {
-	log.Printf("[%s] %s", message.From.UserName, message.Text)
+	// log.Printf("[%s] %s", message.From.UserName, message.Text)
 
 	msg := tgbotapi.NewMessage(message.Chat.ID, message.Text)
 
@@ -101,7 +101,11 @@ func (b *Bot) handleIPinfo(message *tgbotapi.Message) {
 
 	txt = b.geo.GetGeo(ip)
 	msg = tgbotapi.NewMessage(message.Chat.ID, txt)
-
 	b.bot.Send(msg)
+
+	err = b.svc.AddRequest(int(message.From.ID), message.From.UserName, txt)
+	if err != nil {
+		log.Println(err)
+	}
 
 }

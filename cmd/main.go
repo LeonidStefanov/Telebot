@@ -32,10 +32,11 @@ func main() {
 		log.Println(err)
 		return
 	}
+	defer database.Close()
 
 	svc := service.NewService(database)
 
-	telegramBot := telebot.NewBot(bot, geo, database, svc)
+	telegramBot := telebot.NewBot(bot, geo, svc)
 
 	err = telegramBot.ConnectBot()
 	if err != nil {

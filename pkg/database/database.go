@@ -37,7 +37,7 @@ func (db *DB) Close() error {
 }
 
 func (db *DB) AddRequest(userId int, userName, response string) error {
-	add := fmt.Sprintf("insert into telegram_bot(user_id, user_name, response) values(%d,'%v',%v)", userId, userName, response)
+	add := fmt.Sprintf("insert into telegram_bot(user_id, user_name, response) values(%d,'%v','%v')", userId, userName, response)
 
 	_, err := db.base.Exec(add)
 	if err != nil {
