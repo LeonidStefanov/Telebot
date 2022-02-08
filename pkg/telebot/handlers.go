@@ -1,8 +1,11 @@
 package telebot
 
 import (
+	"errors"
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -60,5 +63,45 @@ func (b *Bot) handleCommand(message *tgbotapi.Message) error {
 		return err
 
 	}
+
+}
+func (b *Bot) check(message *tgbotapi.Message) error {
+
+	ip := strings.Split(message.Text, ".")
+
+	if len(ip) > 4 || len(ip) < 4 {
+
+		return errors.New("not IP type")
+	}
+
+	for i := 0; i < len(ip); i++ {
+		r, err := strconv.Atoi(ip[i])
+		if err != nil {
+			return errors.New("not IP type")
+		}
+
+		if r > 256 || r < 0 {
+			return errors.New("not IP type")
+		}
+
+	}
+	return nil
+}
+
+func (b *Bot) handleIPinfo(message *tgbotapi.Message) {
+	msg := tgbotapi.NewMessage(message.Chat.ID, "Это не IP-адрес")
+	var txt string
+	err := b.check(message)
+	if err != nil {
+		b.bot.Send(msg)
+		return
+
+	}
+	ip := message.Text
+
+	txt = b.geo.GetGeo(ip)
+	msg = tgbotapi.NewMessage(message.Chat.ID, txt)
+
+	b.bot.Send(msg)
 
 }
