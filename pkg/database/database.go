@@ -48,7 +48,7 @@ func (db *DB) AddRequest(userId int, userName, response string) error {
 }
 func (db *DB) GetRequest() ([]models.Request, error) {
 
-	rep, err := db.base.Query("SELECT id,name,age FROM telegram_bot ")
+	rep, err := db.base.Query("SELECT id,user_id ,user_name,response FROM telegram_bot ")
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (db *DB) GetRequest() ([]models.Request, error) {
 
 	for rep.Next() {
 		var r models.Request
-		err := rep.Scan(&r.ID, &r.UserID, &r.UserName, r.Respons)
+		err := rep.Scan(&r.ID, &r.UserID, &r.UserName, &r.Respons)
 		if err != nil {
 			return nil, err
 		}
@@ -67,7 +67,7 @@ func (db *DB) GetRequest() ([]models.Request, error) {
 	if rep.Err() != nil {
 		return nil, err
 	}
-	fmt.Println(report)
+
 	return report, nil
 
 }

@@ -5,6 +5,7 @@ import (
 	"home/leonid/Git/Pract/telegram_bot/pkg/geolocation"
 	"home/leonid/Git/Pract/telegram_bot/pkg/service"
 	"home/leonid/Git/Pract/telegram_bot/pkg/telebot"
+	"home/leonid/Git/Pract/telegram_bot/transport"
 	"log"
 	"time"
 
@@ -35,6 +36,18 @@ func main() {
 	defer database.Close()
 
 	svc := service.NewService(database)
+
+	transport := transport.NewServerConnect("8080", svc)
+
+	transport.InitEndpoints()
+
+	go func() {
+		err = transport.StartServer()
+		if err != nil {
+			log.Println(err)
+		}
+
+	}()
 
 	telegramBot := telebot.NewBot(bot, geo, svc)
 

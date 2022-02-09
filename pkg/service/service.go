@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"home/leonid/Git/Pract/telegram_bot/pkg/models"
 	"log"
 )
@@ -27,7 +26,7 @@ func NewService(d Database) Service {
 }
 
 func (s *service) AddRequest(userId int, userName, response string) error {
-	fmt.Println("svc::AddRequest:", userId, userName, response)
+
 	err := s.db.AddRequest(userId, userName, response)
 	if err != nil {
 		log.Println(err)
