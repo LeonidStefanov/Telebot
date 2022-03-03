@@ -26,7 +26,6 @@ func NewBot(bot *tgbotapi.BotAPI, g geo, svc service.Service) *Bot {
 }
 
 func (b *Bot) ConnectBot() error {
-	// log.Printf("%s  подключен ", b.bot.Self.UserName)
 
 	updates := b.initUpdatesChannel()
 

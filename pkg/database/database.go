@@ -36,8 +36,9 @@ func (db *DB) Close() error {
 	return db.base.Close()
 }
 
-func (db *DB) AddRequest(userId int, userName, response string) error {
-	add := fmt.Sprintf("insert into telegram_bot(user_id, user_name, response) values(%d,'%v','%v')", userId, userName, response)
+func (db *DB) AddRequest(userId int, userName, response string, resTime string) error {
+
+	add := fmt.Sprintf("insert into telegram_bot(user_id, user_name, response, date_and_time ) values(%d,'%v','%v','%v')", userId, userName, response, resTime)
 
 	_, err := db.base.Exec(add)
 	if err != nil {
@@ -48,7 +49,7 @@ func (db *DB) AddRequest(userId int, userName, response string) error {
 }
 func (db *DB) GetRequest() ([]models.Request, error) {
 
-	rep, err := db.base.Query("SELECT id,user_id ,user_name,response FROM telegram_bot ")
+	rep, err := db.base.Query("SELECT id,user_id ,user_name,response, date_and_time FROM telegram_bot ")
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func (db *DB) GetRequest() ([]models.Request, error) {
 
 	for rep.Next() {
 		var r models.Request
-		err := rep.Scan(&r.ID, &r.UserID, &r.UserName, &r.Respons)
+		err := rep.Scan(&r.ID, &r.UserID, &r.UserName, &r.Respons, &r.ResTime)
 		if err != nil {
 			return nil, err
 		}
@@ -70,4 +71,68 @@ func (db *DB) GetRequest() ([]models.Request, error) {
 
 	return report, nil
 
+}
+
+func (db *DB) GetUsers() ([]models.Request, error) {
+
+	rep, err := db.base.Query("SELECT user_id , user_name  from  telegram_bot   ")
+	if err != nil {
+		return nil, err
+	}
+
+	report := []models.Request{}
+
+	for rep.Next() {
+		var r models.Request
+		err := rep.Scan(&r.UserID, &r.UserName)
+		if err != nil {
+			return nil, err
+		}
+
+		report = append(report, r)
+	}
+	if rep.Err() != nil {
+		return nil, err
+	}
+
+	return report, nil
+
+}
+
+func (db *DB) GetUserRequests(user_name string) ([]models.Request, error) {
+
+	rep, err := db.base.Query("Select response,date_and_time from telegram_bot WHERE user_name =?", user_name)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	report := []models.Request{}
+
+	for rep.Next() {
+		var r models.Request
+		err := rep.Scan(&r.Respons, &r.ResTime)
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Println(r)
+		report = append(report, r)
+	}
+	if rep.Err() != nil {
+		return nil, err
+	}
+
+	return report, nil
+}
+
+func (db *DB) DeleteRequst(id int) error {
+	str := fmt.Sprintf("DELETE FROM telegram_bot WHERE id =%v", id)
+
+	add, err := db.base.Exec(str)
+	if err != nil {
+		return err
+	}
+	fmt.Println(add)
+	return nil
 }

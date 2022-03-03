@@ -6,13 +6,19 @@ import (
 )
 
 type Database interface {
-	AddRequest(userId int, userName, response string) error
+	DeleteRequst(id int) error
+	GetUserRequests(user_name string) ([]models.Request, error)
+	AddRequest(userId int, userName, response, resTime string) error
 	GetRequest() ([]models.Request, error)
+	GetUsers() ([]models.Request, error)
 	Close() error
 }
 type Service interface {
-	AddRequest(userId int, userName, response string) error
+	DeleteRequst(id int) error
+	GetUserRequests(user_name string) ([]models.Request, error)
+	AddRequest(userId int, userName, response, resTime string) error
 	GetRequest() ([]models.Request, error)
+	GetUsers() ([]models.Request, error)
 }
 
 type service struct {
@@ -25,9 +31,9 @@ func NewService(d Database) Service {
 	}
 }
 
-func (s *service) AddRequest(userId int, userName, response string) error {
+func (s *service) AddRequest(userId int, userName, response, resTime string) error {
 
-	err := s.db.AddRequest(userId, userName, response)
+	err := s.db.AddRequest(userId, userName, response, resTime)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -43,4 +49,34 @@ func (s *service) GetRequest() ([]models.Request, error) {
 	}
 
 	return rep, nil
+}
+
+func (s *service) GetUserRequests(user_name string) ([]models.Request, error) {
+	rep, err := s.db.GetUserRequests(user_name)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return rep, nil
+}
+
+func (s *service) GetUsers() ([]models.Request, error) {
+	rep, err := s.db.GetRequest()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return rep, nil
+}
+
+func (s *service) DeleteRequst(id int) error {
+	err := s.db.DeleteRequst(id)
+
+	if err != nil {
+		return nil
+	}
+
+	return nil
 }

@@ -13,8 +13,7 @@ import (
 )
 
 const (
-	botKey    = "2076166423:AAGSEzlCugL_WvKtNwCXYl5IZS8V2_4fwrg"
-	IPinfoKey = "c3e8941c306ed1"
+	botKey = "2076166423:AAGSEzlCugL_WvKtNwCXYl5IZS8V2_4fwrg"
 )
 
 func main() {

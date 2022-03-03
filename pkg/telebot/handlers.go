@@ -6,6 +6,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -97,13 +98,15 @@ func (b *Bot) handleIPinfo(message *tgbotapi.Message) {
 		return
 
 	}
+
+	dt := time.Now()
 	ip := message.Text
 
 	txt = b.geo.GetGeo(ip)
 	msg = tgbotapi.NewMessage(message.Chat.ID, txt)
 	b.bot.Send(msg)
 
-	err = b.svc.AddRequest(int(message.From.ID), message.From.UserName, txt)
+	err = b.svc.AddRequest(int(message.From.ID), message.From.UserName, txt, dt.Format(time.RFC3339))
 	if err != nil {
 		log.Println(err)
 	}
