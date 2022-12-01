@@ -27,7 +27,7 @@ func main() {
 
 	geo := geolocation.NewIPinfo(time.Second * 15)
 
-	database, err := database.NewBD("leonid:0000@/dbecho")
+	database, err := database.NewBD("leonid:0000@/dbecho") //db connect
 	if err != nil {
 		log.Println(err)
 		return
@@ -36,7 +36,7 @@ func main() {
 
 	svc := service.NewService(database)
 
-	transport := transport.NewServerConnect("8080", svc)
+	transport := transport.NewServerConnect("3306", svc)
 
 	transport.InitEndpoints()
 
